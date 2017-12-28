@@ -1,12 +1,12 @@
 {
   "extension_name": {
-    "message": "Nanotation"
+    "message": "Nanotation Deep Linker"
   },
   "extension_desc": {
-    "message": "Shares highlights on a page through a link."
+    "message": "Shares highlights and private notes on a page through a link."
   },
   "context_menu_copy_link": {
-    "message": "Share selection link"
+    "message": "Copy link to selection"
   },
   "context_menu_add_note": {
     "message": "Add nanotation note…"

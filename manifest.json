@@ -1,7 +1,6 @@
 {
-	"update_url": "https://github.com/shepazu/nanotation",
   "name": "__MSG_extension_name__",
-	"version": "0.3",
+	"version": "0.4",
 	"description": "__MSG_extension_desc__",
 	"icons": {
 		"16": "link-16x16.png",
