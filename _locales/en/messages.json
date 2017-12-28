@@ -5,7 +5,10 @@
   "extension_desc": {
     "message": "Shares highlights on a page through a link."
   },
-  "context_menu_entry": {
+  "context_menu_copy_link": {
     "message": "Share selection link"
+  },
+  "context_menu_add_note": {
+    "message": "Add nanotation note…"
   }
 }

@@ -3,20 +3,29 @@ let temp_buffer = document.createElement("textarea");
 document.body.appendChild(temp_buffer);
 
 chrome.contextMenus.create({
-  id: chrome.i18n.getMessage("extension_name"),
-  title: chrome.i18n.getMessage("context_menu_entry"),
+  id: "copy_link",
+  title: chrome.i18n.getMessage("context_menu_copy_link"),
+  contexts: ["selection"]
+});
+
+chrome.contextMenus.create({
+  id: "add_note",
+  title: chrome.i18n.getMessage("context_menu_add_note"),
   contexts: ["selection"]
 });
 
 // Register a contextmenu click handler, since it's an event page extension
-chrome.contextMenus.onClicked.addListener(function (info, tab) {
-  // Send the url and selection text to the content script, which will return the share link
+function check_context_item (info, tab) {
   chrome.tabs.sendMessage(
     tab.id, 
-    {url: tab.url, selection: info.selectionText}, 
-    {frameId: info.frameId}
-  );
-})
+    { action: info.menuItemId, 
+      url: tab.url, 
+      selection: info.selectionText
+    }, 
+    { frameId: info.frameId }
+  )
+};
+
 
 chrome.runtime.onMessage.addListener(function ( url ) {
   // copy url to system clipboard
@@ -25,3 +34,6 @@ chrome.runtime.onMessage.addListener(function ( url ) {
   document.execCommand("copy", false, null);
   temp_buffer.value = "";
 });
+
+//Instruct Chrome to launch a particular function when context menu items are clicked.
+chrome.contextMenus.onClicked.addListener(check_context_item);
