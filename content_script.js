@@ -58,10 +58,10 @@ window.onload = () => {
     search_str = url_params.get("text")
     note_str = url_params.get("note")
     try {
-      search_str = decodeURI(search_str);
+      search_str = decode_params(search_str);
 
       if (note_str) {
-        note_str = decodeURI(note_str);
+        note_str = decode_params(note_str);
       }
     } catch(e) { 
       // catch malformed URL
@@ -134,5 +134,14 @@ function highlight_text( node ) {
 
 function trim_text( text_str ) {
   text_str = text_str.replace(/(\r\n|\n|\r)/gm, "").replace(/\s+/g, " ").trim();
+  return text_str;
+}
+
+function decode_params( text_str ) {
+  text_str = decodeURIComponent(text_str);
+
+  // seems to need double cleanup, sometimes
+  text_str = decodeURIComponent(text_str);
+
   return text_str;
 }
