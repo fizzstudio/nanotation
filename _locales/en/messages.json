@@ -1,0 +1,11 @@
+{
+  "extension_name": {
+    "message": "Nanotation"
+  },
+  "extension_desc": {
+    "message": "Shares highlights on a page through a link."
+  },
+  "context_menu_entry": {
+    "message": "Share selection link"
+  }
+}

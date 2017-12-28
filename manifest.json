@@ -1,0 +1,28 @@
+{
+	"update_url": "http://schepers.cc/annotations/nanotation",
+  "name": "__MSG_extension_name__",
+	"version": "0.3",
+	"description": "__MSG_extension_desc__",
+	"icons": {
+		"16": "link-16x16.png",
+		"48": "link-48x48.png",
+		"128": "link-128x128.png"
+	},
+	"permissions": [
+		"contextMenus",
+		"clipboardWrite"
+	],
+	"background": {
+    "scripts": ["context_menu.js"],
+    "persistent": false
+  },
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": ["content_script.js"],
+			"run_at": "document_end"
+		}
+	],
+	"manifest_version": 2,
+  "default_locale": "en"
+}
