@@ -6,6 +6,10 @@ Provides a context menu item that lets you copy a link to a text selection. This
 
 This is very simplistic, but it doesn't require any special server, social service, or persistent resource. It's just a link. If the recipient doesn't have the Nanotation browser extension installed, they'll still end up on the right page, just not at the right selection.
 
+This extension doesn't (and won't) collect or send any information, personal or otherwise, to anyone else. It operates completely in the browser, and is as private as possible. It doesn't collect usage statistics, and I don't see a reason for it to ever do so. In the future, it might use localStorage ("big cookies") to maintain personal history on the user's own computer, but that would just be for convenience.
+
+This extension is partly intended to spark conversation about standardization of similar functionality, so it could be natively implemented in browsers. This would make it much more usable and useful.
+
 Issues and PRs welcome!
 
 ## Known limits
@@ -18,11 +22,13 @@ Issues and PRs welcome!
 - Practical URL character length limits apply _(extent not tested)_
 - Doesn't allow user to add comments (yet)
 - Haven't tested accessibility, and it's probably terrible… maybe add focus to the parent element?
+- Very generic icon
 - Seems buggy sometimes
 
 ## TODO
 - Provide interface to allow short comments, via `title` attribute on `<mark>` element
 - If there's a nearby element (parent or section header) that has an `id`, include that in the URL, and use that instead of auto-scrolling
+- Create matching extensions for other browsers, like Firefox, Edge, and Safari.
 
 ## More details
 Loosely based on draft W3C Web Annotation specifications, such as the [RangeFinder API draft](http://w3c.github.io/rangefinder/).
