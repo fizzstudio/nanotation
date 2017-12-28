@@ -1,5 +1,5 @@
 {
-	"update_url": "http://schepers.cc/annotations/nanotation",
+	"update_url": "https://github.com/shepazu/nanotation",
   "name": "__MSG_extension_name__",
 	"version": "0.3",
 	"description": "__MSG_extension_desc__",
