@@ -22,13 +22,13 @@ Issues and PRs welcome!
 - Only one selection per page
 - No persistence
 - Practical URL character length limits apply _(extent not tested)_
-- Doesn't allow user to add comments (yet)
+- ~~Doesn't allow user to add comments (yet)~~
 - Haven't tested accessibility, and it's probably terrible… maybe add focus to the parent element?
 - Very generic icon
 - Seems buggy sometimes
 
 ## TODO
-- Provide interface to allow short comments, via `title` attribute on `<mark>` element
+- ~~Provide interface to allow short comments, via `title` attribute on `<mark>` element~~
 - If there's a nearby element (parent or section header) that has an `id`, include that in the URL, and use that instead of auto-scrolling
 - Create matching extensions for other browsers, like Firefox, Edge, and Safari.
 
