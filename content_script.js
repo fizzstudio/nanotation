@@ -1,5 +1,6 @@
 'use strict';
 
+// handle messages from context menu
 chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
   let selection = trim_text( request.selection );
   var url = new URL( request.url );
@@ -7,16 +8,29 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
 
   var url_params = new URLSearchParams(query);
   url_params.set("text", encodeURIComponent(selection) );
+  
+  
+  var selection_obj = window.getSelection();
+  // console.log(selection_obj.anchorNode.parentElement.closest("[id]"))
+
+  // set hash to nearest element with an id, 
+  //   in case recipient doesn't have Nanotation extension installed,
+  //   or in case something goes wrong in finding match
+  var loc_id = find_nearest_id( selection_obj.anchorNode.parentElement );
+  if ( loc_id ) {
+    url.hash = loc_id;
+  }
 
   if ( "copy_link" === request.action ) {
     url.search = url_params.toString();
     chrome.runtime.sendMessage(null, url.toString());  
   } else if ( "add_note" === request.action ) {
 
-    let lightbox_frame = document.createElement('div');
+    let lightbox_frame = document.createElement("div");
     lightbox_frame.id = "nanotation_lightbox_background";
-    let lightbox = document.createElement('div');
+    let lightbox = document.createElement("dialog");
     lightbox.id = "nanotation_lightbox";
+    lightbox.setAttribute("open", "open");
 
     let blockquote = document.createElement("blockquote");
     blockquote.id = "nanotation_blockquote";
@@ -119,6 +133,7 @@ function highlight_text( node ) {
     range.setEnd(node, start_index + search_str.length);
 
     var mark = document.createElement("mark");
+    mark.setAttribute("data-nanotation", "selection");
 
     if (note_str) {
       mark.setAttribute("title", note_str);
@@ -126,8 +141,15 @@ function highlight_text( node ) {
     range.surroundContents(mark);
 
     // set scroll position
-    node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-  }
+    // TODO: find better solution than setTimeout hack for navigating to the right section
+    //       after the hash link has been resolved, which seems to happen after "load" event.
+    //       When hash is present, it scrolls the window again after this function, so need hack
+    // node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+    setTimeout(function(){
+      var mark_el = document.querySelector("[data-nanotation=selection]")
+      mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"}); 
+    }, 1000);
+}
 
   return found;
 }
@@ -141,7 +163,27 @@ function decode_params( text_str ) {
   text_str = decodeURIComponent(text_str);
 
   // seems to need double cleanup, sometimes
+  // TODO: find better way to resolve this hack
   text_str = decodeURIComponent(text_str);
 
   return text_str;
+}
+
+function find_nearest_id( el ) {
+  var id_el = el;
+  var id = id_el.id;
+
+  // first check previous siblings for an id
+  while ( !id ) {
+    id_el = id_el.previousElementSibling;
+    id = id_el.id;
+  }
+
+  // if no previous siblings has an id, find the closest ancestor with an id
+  if ( !id ) {
+    id_el = el.closest("[id]");
+    id = id_el.id;
+  }
+
+  return id;
 }
