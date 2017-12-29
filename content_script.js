@@ -141,10 +141,9 @@ function highlight_text( node ) {
     range.surroundContents(mark);
 
     // set scroll position
-    // TODO: find better solution than setTimeout hack for navigating to the right section
-    //       after the hash link has been resolved, which seems to happen after "load" event.
-    //       When hash is present, it scrolls the window again after this function, so need hack
-    // node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+    // window.addEventListener("hashchange", (node_el) => {
+    //   node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+    // })
     setTimeout(function(){
       var mark_el = document.querySelector("[data-nanotation=selection]")
       mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"}); 
@@ -176,6 +175,9 @@ function find_nearest_id( el ) {
   // first check previous siblings for an id
   while ( !id ) {
     id_el = id_el.previousElementSibling;
+    if (!id_el) {
+      break;
+    }
     id = id_el.id;
   }
 
