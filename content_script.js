@@ -7,13 +7,12 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
   var query = url.search;
 
   var url_params = new URLSearchParams(query);
-  url_params.set("text", encodeURIComponent(selection) );
-  
-  
+  url_params.set("text", selection );
+
   var selection_obj = window.getSelection();
   // console.log(selection_obj.anchorNode.parentElement.closest("[id]"))
 
-  // set hash to nearest element with an id, 
+  // set hash to nearest element with an id,
   //   in case recipient doesn't have Nanotation extension installed,
   //   or in case something goes wrong in finding match
   var loc_id = find_nearest_id( selection_obj.anchorNode.parentElement );
@@ -23,7 +22,7 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
 
   if ( "copy_link" === request.action ) {
     url.search = url_params.toString();
-    chrome.runtime.sendMessage(null, url.toString());  
+    chrome.runtime.sendMessage(null, url.toString());
   } else if ( "add_note" === request.action ) {
 
     let lightbox_frame = document.createElement("div");
@@ -40,19 +39,19 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
     input.setAttribute("placeholder", "add a short note");
     input.id = "nanotation_input";
 
-             
+
     document.body.appendChild(lightbox_frame);
     lightbox_frame.appendChild( lightbox );
     lightbox.appendChild( blockquote );
     lightbox.appendChild( input );
-    
+
     input.focus();
 
-    const close_lightbox = function() { 
+    const close_lightbox = function() {
       let note = input.value;
-      url_params.set("note", encodeURIComponent(note) );
+      url_params.set("note", note );
       url.search = url_params.toString();
-      chrome.runtime.sendMessage(null, url.toString());  
+      chrome.runtime.sendMessage(null, url.toString());
       lightbox_frame.remove();
     }
 
@@ -71,16 +70,6 @@ window.onload = () => {
     var url_params = new URLSearchParams(query);
     search_str = url_params.get("text")
     note_str = url_params.get("note")
-    try {
-      search_str = decode_params(search_str);
-
-      if (note_str) {
-        note_str = decode_params(note_str);
-      }
-    } catch(e) { 
-      // catch malformed URL
-      console.error(e);
-    }
 
     search_str = trim_text(search_str);
 
@@ -91,23 +80,23 @@ window.onload = () => {
 function find_text_nodes() {
   var rejectScriptStyleFilter = {
     acceptNode: function(node) {
-      if ( "script" !== node.parentNode.nodeName.toLowerCase() 
+      if ( "script" !== node.parentNode.nodeName.toLowerCase()
         && "style" !== node.parentNode.nodeName.toLowerCase()) {
         return NodeFilter.FILTER_ACCEPT;
       }
     }
   };
-  
+
   var walker = document.createTreeWalker(
-    document.body, 
-    NodeFilter.SHOW_TEXT, 
+    document.body,
+    NodeFilter.SHOW_TEXT,
     rejectScriptStyleFilter,
     false
   );
-  
+
   var node;
   var textNodes = [];
-  
+
   var found = false;
   while(node = walker.nextNode()) {
     if (!found) {
@@ -125,9 +114,9 @@ function highlight_text( node ) {
     found = true;
 
     var node_el = node.parentElement;
-    
+
     node.nodeValue = target_text;
- 
+
     var range = document.createRange();
     range.setStart(node, start_index);
     range.setEnd(node, start_index + search_str.length);
@@ -137,16 +126,17 @@ function highlight_text( node ) {
 
     if (note_str) {
       mark.setAttribute("title", note_str);
-    }  
+    }
     range.surroundContents(mark);
 
     // set scroll position
-    // window.addEventListener("hashchange", (node_el) => {
-    //   node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-    // })
+    // NOTE: When hash is present, it scrolls the window again after this function, so need hack
+    // node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+    // TODO: find better solution than setTimeout hack for navigating to the right section
+    //    after the hash link has been resolved, which seems to happen after "load" event.
     setTimeout(function(){
       var mark_el = document.querySelector("[data-nanotation=selection]")
-      mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"}); 
+      mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
     }, 1000);
 }
 
@@ -155,16 +145,6 @@ function highlight_text( node ) {
 
 function trim_text( text_str ) {
   text_str = text_str.replace(/(\r\n|\n|\r)/gm, "").replace(/\s+/g, " ").trim();
-  return text_str;
-}
-
-function decode_params( text_str ) {
-  text_str = decodeURIComponent(text_str);
-
-  // seems to need double cleanup, sometimes
-  // TODO: find better way to resolve this hack
-  text_str = decodeURIComponent(text_str);
-
   return text_str;
 }
 
@@ -184,7 +164,9 @@ function find_nearest_id( el ) {
   // if no previous siblings has an id, find the closest ancestor with an id
   if ( !id ) {
     id_el = el.closest("[id]");
-    id = id_el.id;
+    if (id_el) {
+      id = id_el.id;
+    }
   }
 
   return id;

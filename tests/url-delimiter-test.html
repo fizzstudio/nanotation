@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Testing possible URL delimiters</title>
+  <style>
+    body {
+      font-family: Verdana, sans-serif;
+      max-width: 50em;
+      margin: auto;
+      margin-bottom: 2em;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: Tahoma, sans-serif;
+      font-weight: normal;
+    }
+
+    hr {
+      height: 50px;
+      background-color: gainsboro;
+      border: none;
+    }
+
+    table {
+      width: 100%
+    }
+
+    table, th, td {
+      border: 1px solid gainsboro;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 5px;
+      text-align: left;
+    }
+
+    th {
+      text-align: center;
+    }
+
+    th > code {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    td[data-column=notes] {
+      width: 15%;
+    }
+
+    code {
+      background-color: aliceblue;
+    }
+
+    .false {
+      background-color: #d01c8b;
+      color: #d01c8b;
+    }
+
+    .true {
+      background-color: #4dac26;
+      color: #4dac26;
+    }
+
+  </style>
+</head>
+
+<body>
+  <hr>
+
+  <h1 id="targetid">Testing possible URL delimiters</h1>
+  <p>This is a test of various characters as URL delimiters. The goal is to find a character that could be used as a delimiter for <i>client-side parameters</i>. In other words, a part of the URL that could be used by client-side applications to provide data or other details, without interfering with the fragment identifier (the "hash"). If such a delimiter were available, a new class of single-transaction customizations would be available, which is especially important now that much of a webapps application logic is in the client, not just the server (as was the case back in the 1990s when the URL schemes were first defined and refined). If one or more client-side parameter delimiters were defined, there could even be a registry of special-purpose schemes that would prevent naming conflicts. Custom URLs could even be standardized for use in CSS and other declarative languages.</p>
+  <p>There are <a href="https://perishablepress.com/stop-using-unsafe-characters-in-urls/">2 classes of characters</a> that have the potential to serve as a delimiter for client-side parameters:</p>
+  <ul>
+    <li id="reserved">Reserved characters, including <code>;</code> <code>/</code> <code>?</code> <code>:</code> <code>@</code> <code>=</code> <code>&</code></li>
+    <li id="url-unsafe">URL-unsafe characters, including <code>"</code> <code>&lt;</code> <code>&gt;</code> <code>#</code> <code>%</code> <code>{</code> <code>}</code> <code>|</code> <code>\</code> <code>^</code> <code>~</code> <code>[</code> <code>]</code> <code>`</code></li>
+  </ul>
+  <p>All other characters are unsuitable as delimiters, because they weren't indicated as special, so they are used indiscriminately in URLs.</p>
+
+  <h2>Test methodology</h2>
+  <p>This test provides links using all the possible delimiters. The first test is whether the page will load at all; the second test is whether, if the page loads, the hash (fragment identifier) successfully navigates to the identified element (in this case, to the &lt;h1&gt;, scrolling past the buffer block at the top of the page).</p>
+
+  <p>Per spec, the query part of the URL is precedes the fragment identifier. For this test, we present the delimiter as preceeding and following the fragment identifier, to see if either works.</p>
+
+  <p><b>Note:</b> Ideally, a client-side parameter section of a URL would follow the fragment identifier, to allow graceful degradation. Currently, none of these potential delimiters are recognized by browsers, and are conflated with the fragment id string, making them unusable as delimiters. This could change, but it would probably require a change to HTML5 and a new URL specification. It's not clear that browser makers would be willing to do this, possibly for fear of braking existing (if rare) behavior for some pages (i.e. pages that have element ids that include the delimiter character).</p>
+
+  <h2>Query delimiter</h2>
+  <p>The combination of query parameter (<code>?</code>) and fragment identifier (<code>#</code>) is known to work:</p>
+  <p><a href="url-delimiter-test.html?test=safe#targetid" target="_blank">url-delimiter-test.html?test=safe#targetid</a></p>
+  <p><b>Conclusion:</b> Testing shows that currently only the query delimiter (<code>?</code>) can safely be used with the fragment identifier (<code>#</code>) in any combination.</p>
+
+  <h2 id="reserved">Reserved characters</h2>
+
+  <h3>Delimiter-first</h3>
+  <table>
+    <tr>
+      <th>character</th>
+      <th>test url</th>
+      <th>page loads</th>
+      <th>hash navigated</th>
+      <th>notes</th>
+    </tr>
+    <tr>
+      <th><code>;</code></th>
+      <td><a href="url-delimiter-test.html;test=safe#targetid" target="_blank">url-delimiter-test.html;test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>/</code></th>
+      <td><a href="url-delimiter-test.html/test=safe#targetid" target="_blank">url-delimiter-test.html/test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>?</code></th>
+      <td><a href="url-delimiter-test.html?test=safe#targetid" target="_blank">url-delimiter-test.html?test=safe#targetid</a></td>
+      <td class="true">true</td>
+      <td class="true">true</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>:</code></th>
+      <td><a href="url-delimiter-test.html:test=safe#targetid" target="_blank">url-delimiter-test.html:test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>@</code></th>
+      <td><a href="url-delimiter-test.html@test=safe#targetid" target="_blank">url-delimiter-test.html@test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>=</code></th>
+      <td><a href="url-delimiter-test.html=test=safe#targetid" target="_blank">url-delimiter-test.html=test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>&</code></th>
+      <td><a href="url-delimiter-test.html&test=safe#targetid" target="_blank">url-delimiter-test.html&test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+  </table>
+
+  <h3>Delimiter-second</h3>
+  <table>
+    <tr>
+      <th>character</th>
+      <th>test url</th>
+      <th>page loads</th>
+      <th>hash navigated</th>
+      <th>notes</th>
+    </tr>
+    <tr>
+      <th><code>;</code></th>
+      <td><a href="url-delimiter-test.html#targetid;test=safe" target="_blank">url-delimiter-test.html#targetid;test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>/</code></th>
+      <td><a href="url-delimiter-test.html#targetid/test=safe" target="_blank">url-delimiter-test.html#targetid/test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>?</code></th>
+      <td><a href="url-delimiter-test.html#targetid?test=safe" target="_blank">url-delimiter-test.html#targetid?test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>:</code></th>
+      <td><a href="url-delimiter-test.html#targetid:test=safe" target="_blank">url-delimiter-test.html#targetid:test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>@</code></th>
+      <td><a href="url-delimiter-test.html#targetid@test=safe" target="_blank">url-delimiter-test.html#targetid@test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>=</code></th>
+      <td><a href="url-delimiter-test.html#targetid=test=safe" target="_blank">url-delimiter-test.html#targetid=test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>&</code></th>
+      <td><a href="url-delimiter-test.html#targetid&test=safe" target="_blank">url-delimiter-test.html#targetid&test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+  </table>
+
+  <h2 id="url-unsafe">URL-unsafe characters</h2>
+  </table>
+
+  <h3>Delimiter-first</h3>
+  <table>
+    <tr>
+      <th>character</th>
+      <th>test url</th>
+      <th>page loads</th>
+      <th>hash navigated</th>
+      <th>notes</th>
+    </tr>
+    <tr>
+      <th><code>"</code></th>
+      <td>(not tested)</td>
+      <td></td>
+      <td></td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>&lt;</code></th>
+      <td>(not tested)</td>
+      <td></td>
+      <td></td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>&gt;</code></th>
+      <td>(not tested)</td>
+      <td></td>
+      <td></td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>#</code></th>
+      <td>(not tested)</td>
+      <td></td>
+      <td></td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>%</code></th>
+      <td><a href="url-delimiter-test.html%test=safe#targetid" target="_blank">url-delimiter-test.html%test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>{</code></th>
+      <td><a href="url-delimiter-test.html{test=safe#targetid" target="_blank">url-delimiter-test.html{test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes">encodes character as <code>%7B</code></td>
+    </tr>
+    <tr>
+      <th><code>}</code></th>
+      <td><a href="url-delimiter-test.html}test=safe#targetid" target="_blank">url-delimiter-test.html}test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes">encodes character as <code>%7D</code></td>
+    </tr>
+    <tr>
+      <th><code>|</code></th>
+      <td><a href="url-delimiter-test.html|test=safe#targetid" target="_blank">url-delimiter-test.html|test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes">encodes character as <code>%7C</code></td>
+    </tr>
+    <tr>
+      <th><code>\</code></th>
+      <td><a href="url-delimiter-test.html\test=safe#targetid" target="_blank">url-delimiter-test.html\test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>^</code></th>
+      <td><a href="url-delimiter-test.html^test=safe#targetid" target="_blank">url-delimiter-test.html^test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>~</code></th>
+      <td><a href="url-delimiter-test.html~test=safe#targetid" target="_blank">url-delimiter-test.html~test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>[</code></th>
+      <td><a href="url-delimiter-test.html[test=safe#targetid" target="_blank">url-delimiter-test.html[test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>]</code></th>
+      <td><a href="url-delimiter-test.html]test=safe#targetid" target="_blank">url-delimiter-test.html]test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>`</code></th>
+      <td><a href="url-delimiter-test.html`test=safe#targetid" target="_blank">url-delimiter-test.html`test=safe#targetid</a></td>
+      <td class="false">false</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+  </table>
+
+  <h3>Delimiter-second</h3>
+  <table>
+    <tr>
+      <th>character</th>
+      <th>test url</th>
+      <th>page loads</th>
+      <th>hash navigated</th>
+      <th>notes</th>
+    </tr>
+    <tr>
+      <th><code>"</code></th>
+      <td>(not tested)</td>
+      <td></td>
+      <td></td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>&lt;</code></th>
+      <td>(not tested)</td>
+      <td></td>
+      <td></td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>&gt;</code></th>
+      <td>(not tested)</td>
+      <td></td>
+      <td></td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>#</code></th>
+      <td>(not tested)</td>
+      <td></td>
+      <td></td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>%</code></th>
+      <td><a href="url-delimiter-test.html#targetid%test=safe" target="_blank">url-delimiter-test.html#targetid%test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>{</code></th>
+      <td><a href="url-delimiter-test.html#targetid{test=safe" target="_blank">url-delimiter-test.html#targetid{test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>}</code></th>
+      <td><a href="url-delimiter-test.html#targetid}test=safe" target="_blank">url-delimiter-test.html#targetid}test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>|</code></th>
+      <td><a href="url-delimiter-test.html#targetid|test=safe" target="_blank">url-delimiter-test.html#targetid|test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>\</code></th>
+      <td><a href="url-delimiter-test.html#targetid\test=safe" target="_blank">url-delimiter-test.html#targetid\test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>^</code></th>
+      <td><a href="url-delimiter-test.html#targetid^test=safe" target="_blank">url-delimiter-test.html#targetid^test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>~</code></th>
+      <td><a href="url-delimiter-test.html#targetid~test=safe" target="_blank">url-delimiter-test.html#targetid~test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>[</code></th>
+      <td><a href="url-delimiter-test.html#targetid[test=safe" target="_blank">url-delimiter-test.html#targetid[test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>]</code></th>
+      <td><a href="url-delimiter-test.html#targetid]test=safe" target="_blank">url-delimiter-test.html#targetid]test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+    <tr>
+      <th><code>`</code></th>
+      <td><a href="url-delimiter-test.html#targetid`test=safe" target="_blank">url-delimiter-test.html#targetid`test=safe</a></td>
+      <td class="true">true</td>
+      <td class="false">false</td>
+      <td data-column="notes"></td>
+    </tr>
+  </table>
+
+</body>
+</html>
