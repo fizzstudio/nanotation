@@ -1,19 +1,27 @@
 {
   "name": "__MSG_extension_name__",
-	"version": "0.4.5",
+	"version": "0.5.0",
 	"description": "__MSG_extension_desc__",
 	"icons": {
 		"16": "link-16x16.png",
 		"48": "link-48x48.png",
 		"128": "link-128x128.png"
 	},
-	"permissions": [
+  "permissions": [
 		"contextMenus",
-		"clipboardWrite"
+		"clipboardWrite",
+		"activeTab",
+		"storage"
 	],
+	"browser_action": {
+    "default_popup": "popup.html"
+  },
 	"background": {
-    "scripts": ["context_menu.js"],
-    "persistent": false
+    "scripts": [
+      "context_menu.js",
+      "storage.js"
+    ],
+    "persistent": true
   },
 	"content_scripts": [
 		{
@@ -23,6 +31,6 @@
 			"run_at": "document_end"
 		}
 	],
-	"manifest_version": 2,
-  "default_locale": "en"
+  "default_locale": "en",
+  "manifest_version": 2
 }

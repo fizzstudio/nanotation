@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nanotation Deep Linker</title>
+  <style type="text/css">
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      font-family: 'Lucida Sans', Geneva, Verdana, sans-serif, sans-serif;
+      width: 400px;
+      font-size: 10px;
+    }
+
+    header {
+      font-family: "Courier New", 'Lucida Sans', Geneva, Verdana, sans-serif, sans-serif;
+      width: 100%;
+      height: 2rem;
+      background-color: #c76c0c;
+      color: white;
+      padding: 0.1rem 0.25rem;
+      text-transform: lowercase;
+      letter-spacing: -0.1em;
+      position: fixed;
+    }
+
+      header h1 {
+        font-size: 1.5rem;
+        font-weight: lighter;
+        display: inline-block;
+      }
+
+      header p {
+        font-size: 0.8rem;
+        margin-left: 2rem;
+        display: inline-block;
+      }
+
+    main {
+      padding-top: 2rem;
+    }
+
+    section#page_info {
+      /* margin: 0.25rem; */
+      padding: 0.5rem;
+      border: thin solid slategray;
+    }
+
+      section#page_info h2 {
+        font-size: 0.8rem;
+        color: #c76c0c;
+      }
+
+      section#page_info p {
+        color: slategray;
+      }
+
+      section#page_info ul {
+        list-style: none;
+        margin: 1em;
+        font-size: 0.8rem;
+      }
+
+        section#page_info ul li {
+          margin-bottom: 0.7rem;
+        }
+
+    #clear_all_button {
+      margin: 0.5em;
+    }
+
+    ul#sent_link_list,
+    ul#received_link_list,
+    section#page_info ul {
+      list-style: none;
+      margin: 1em;
+      font-size: 0.8rem;
+    }
+
+    details.origin > summary {
+      font-size: 1rem;
+      background-color: #c76c0c;
+      color: white;
+      padding: 0.1rem;
+      padding-left: 0.3rem;
+      margin-top: 0.1rem;
+    }
+
+    li details {
+      margin-bottom: 0.3rem;
+    }
+
+      li details summary {
+        color: #c76c0c;
+      }
+
+        li details.not_found summary {
+          color: crimson;
+        }
+
+
+      li details p.url {
+        color: slategray;
+        margin-left: 0.8rem;
+      }
+
+      li details blockquote,
+      section#page_info li blockquote {
+        border-left: 0.2rem solid rgb(199, 108, 12);
+        background-color: rgba(199, 108, 12, 0.3);
+        margin: 0.1rem 0.1rem 0.1rem 0.8rem;
+        padding: 0.1rem 0.1rem 0.1rem 0.3rem;
+      }
+
+        li details.not_found blockquote,
+        section#page_info li.not_found blockquote {
+          border-left: 0.2rem solid rgb(220, 20, 60);
+          background-color: rgba(220, 20, 60, 0.3);
+        }
+
+      li details q.note,
+      section#page_info li q.note  {
+        display: block;
+        text-align: right;
+        padding: 0.1rem;
+        quotes: '“' '”';
+      }
+
+        li details q:before {
+          content: open-quote;
+        }
+
+        li details q:after {
+          content: close-quote;
+        }
+
+    label#store_links_label {
+      word-wrap: break-word;
+    }
+
+    input[type=checkbox] {
+      vertical-align: middle;
+    }
+
+    section#controls {
+      align-items: center;
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+      section#controls button,
+      section#controls input,
+      section#controls label {
+        padding: 0.2em;
+        color: #c76c0c;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+
+      section#controls button {
+        border: #c76c0c thin solid;
+      }
+  </style>
+  <script src="popup.js"></script>
+</head>
+<body>
+  <header id="header">
+    <h1>Nanotation</h1>
+    <p>Private annotations for the web</p>
+  </header>
+
+  <main>
+    <section id="controls">
+      <label id="store_links_label" title="store links on local machine">
+        <input id="store_links_checkbox" type="checkbox"/> store links
+      </label>
+      <button id="clear_all_button" title="clear link history">clear all</button>
+      <button id="download_button" title="download links as JSON">download links</button>
+    </section>
+
+    <section id="page_info">
+      <h2></h2>
+      <p></p>
+      <ul></ul>
+    </section>
+
+    <details class="origin">
+      <summary>sent links <span id="sent_count"></span></summary>
+      <ul id="sent_link_list"></ul>
+    </details>
+
+    <details class="origin">
+      <summary>received links <span id="received_count"></span></summary>
+      <ul id="received_link_list"></ul>
+    </details>
+  </main>
+
+</body>
+</html>
