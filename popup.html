@@ -81,6 +81,14 @@
       font-size: 0.8rem;
     }
 
+      section#page_info li {
+        cursor: pointer;
+      }
+
+        section#page_info li.not_found {
+          cursor: default;
+        }
+
     details.origin > summary {
       font-size: 1rem;
       background-color: #c76c0c;
@@ -104,8 +112,15 @@
 
 
       li details p.url {
-        color: slategray;
         margin-left: 0.8rem;
+      }
+
+      li details p.url,
+      li details p.url a,
+      li details p.url a:visited {
+        color: slategray;
+        text-decoration: none;
+        cursor: pointer;
       }
 
       li details blockquote,

@@ -24,10 +24,12 @@ window.onload = () => {
 }
 
 function find_text_nodes() {
-  var rejectScriptStyleFilter = {
+  var rejectScriptStyleSpaceFilter = {
     acceptNode: function(node) {
       if ( "script" !== node.parentNode.nodeName.toLowerCase()
-        && "style" !== node.parentNode.nodeName.toLowerCase()) {
+        && "style" !== node.parentNode.nodeName.toLowerCase()
+        && ( ! /^\s*$/.test(node.data) ) ) {
+        // filter out nodes in 'script' or 'style' elements, or are whitespace-only
         return NodeFilter.FILTER_ACCEPT;
       }
     }
@@ -36,7 +38,7 @@ function find_text_nodes() {
   var walker = document.createTreeWalker(
     document.body,
     NodeFilter.SHOW_TEXT,
-    rejectScriptStyleFilter,
+    rejectScriptStyleSpaceFilter,
     false
   );
 
@@ -98,20 +100,59 @@ function show_selection( node ) {
     range.surroundContents(mark_el);
 
     // set scroll position
-    // NOTE: When hash is present, it scrolls the window again after this function, so need hack
-    // node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-    // TODO: find better solution than setTimeout hack for navigating to the right section
-    //    after the hash link has been resolved, which seems to happen after "load" event.
-    setTimeout(function(){
-      // let mark_el = document.querySelector("[data-nanotation=selection]");
-      let mark_el = document.querySelector(`#${mark_id}`)
-      mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-    }, 1000);
+    scroll_to_mark ( mark_id );
+
+    // // set scroll position
+    // // NOTE: When hash is present, it scrolls the window again after this function, so need hack
+    // // node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+    // // TODO: find better solution than setTimeout hack for navigating to the right section
+    // //    after the hash link has been resolved, which seems to happen after "load" event.
+    // setTimeout(function(){
+    //   // let mark_el = document.querySelector("[data-nanotation=selection]");
+    //   let mark_el = document.querySelector(`#${mark_id}`)
+    //   mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+    // }, 1000);
   }
   return {
     found: found,
     mark_id: mark_id
   };
+}
+
+
+function find_selection ( details ) {
+  search_str = details.text;
+  note_str = details.note;
+
+  var selection_mark = null;
+  var marks = document.querySelectorAll("mark");
+  for (var m = 0, m_len = marks.length; m_len > m; ++m) {
+    let each_mark = marks[m];
+    if ( search_str === each_mark.textContent ) {
+      selection_mark = each_mark;
+      break;
+    }
+  }
+
+  if (selection_mark ) {
+    scroll_to_mark( selection_mark.id );
+  } else {
+    find_text_nodes();
+  }
+}
+
+
+function scroll_to_mark ( mark_id ) {
+  // set scroll position
+  // NOTE: When hash is present, it scrolls the window again after this function, so need hack
+  // node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+  // TODO: find better solution than setTimeout hack for navigating to the right section
+  //    after the hash link has been resolved, which seems to happen after "load" event.
+  setTimeout(function(){
+    // let mark_el = document.querySelector("[data-nanotation=selection]");
+    let mark_el = document.querySelector(`#${mark_id}`)
+    mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+  }, 500);
 }
 
 function trim_text( text_str ) {
@@ -155,75 +196,67 @@ function generate_unique_id( base_id ) {
 
 
 
-// handle messages from context menu
+// handle messages from context menu and popup
 chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
-  let selection = trim_text( request.selection );
-  var url = new URL( request.url );
-  var query = url.search;
+  if ( "show_quote" === request.action ) {
+    find_selection ( request.details );
+  } else {
+    let selection = trim_text( request.selection );
+    var url = new URL( request.url );
+    var query = url.search;
 
-  var url_params = new URLSearchParams(query);
-  url_params.set("text", selection );
+    var url_params = new URLSearchParams(query);
+    url_params.set("text", selection );
 
-  var selection_obj = window.getSelection();
-  // console.log(selection_obj.anchorNode.parentElement.closest("[id]"))
+    var selection_obj = window.getSelection();
+    // console.log(selection_obj.anchorNode.parentElement.closest("[id]"))
 
-  // set hash to nearest element with an id,
-  //   in case recipient doesn't have Nanotation extension installed,
-  //   or in case something goes wrong in finding match
-  var loc_id = find_nearest_id( selection_obj.anchorNode.parentElement );
-  if ( loc_id ) {
-    url.hash = loc_id;
-  }
-
-  let location = window.location;
-  let details = {
-    url: location.hostname + location.pathname,
-    title: document.title,
-    text: selection,
-    note: null,
-    link: null
-  }
-
-  if ( "copy_link" === request.action ) {
-    url.search = url_params.toString();
-    // chrome.runtime.sendMessage(null,
-    //   {
-    //     action: "copy_to_clipboard",
-    //     url: url.toString()
-    //   }
-    // );
-    details.link = url.toString();
-    save_link( details );
-
-  } else if ( "add_note" === request.action ) {
-    const close_lightbox = function() {
-      // close lightbox
-      const lightbox_frame = document.querySelector("#nanotation_lightbox_frame");
-      if (lightbox_frame) {
-        lightbox_frame.remove();
-      }
+    // set hash to nearest element with an id,
+    //   in case recipient doesn't have Nanotation extension installed,
+    //   or in case something goes wrong in finding match
+    var loc_id = find_nearest_id( selection_obj.anchorNode.parentElement );
+    if ( loc_id ) {
+      url.hash = loc_id;
     }
 
-    const completed = function() {
-      const input = document.querySelector("input#nanotation_input");
-      let note = input.value;
-      url_params.set("note", note );
+    let location = window.location;
+    let details = {
+      url: location.hostname + location.pathname,
+      title: document.title,
+      text: selection,
+      note: null,
+      link: null
+    }
+
+    if ( "copy_link" === request.action ) {
       url.search = url_params.toString();
-      // chrome.runtime.sendMessage(null,
-      //   {
-      //     action: "copy_to_clipboard",
-      //     url: url.toString()
-      //   }
-      // );
-      details.note = note;
       details.link = url.toString();
       save_link( details );
 
-      // close lightbox
-      close_lightbox();
-    }
+    } else if ( "add_note" === request.action ) {
+      const close_lightbox = function() {
+        // close lightbox
+        const lightbox_frame = document.querySelector("#nanotation_lightbox_frame");
+        if (lightbox_frame) {
+          lightbox_frame.remove();
+        }
+      }
 
-    show_lightbox ( selection, completed, close_lightbox );
+      const completed = function() {
+        const input = document.querySelector("input#nanotation_input");
+        let note = input.value;
+        url_params.set("note", note );
+        url.search = url_params.toString();
+        details.note = note;
+        details.link = url.toString();
+        save_link( details );
+
+        // close lightbox
+        close_lightbox();
+      }
+
+      show_lightbox ( selection, completed, close_lightbox );
+    }
   }
 });
 

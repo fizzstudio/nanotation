@@ -1,4 +1,5 @@
 const storage = chrome.storage.local;
+let active_tab = null;
 
 function get_current_tab_info (callback) {
   var query_info = {
@@ -9,6 +10,7 @@ function get_current_tab_info (callback) {
   chrome.tabs.query(query_info, (tabs) => {
     var tab = tabs[0];
     if (tab) {
+      active_tab = tab;
       var tab_info = {
         url: tab.url,
         title: tab.title
@@ -131,7 +133,11 @@ function show_link_lists ( current_page_url ) {
 
         let p_url = document.createElement("p");
         p_url.setAttribute("class", "url");
-        p_url.textContent = item.url;
+        let a = document.createElement("a");
+        a.setAttribute("href", item.link);
+        a.setAttribute("target", "_blank");
+        a.textContent = item.url;
+        p_url.appendChild( a );
         details.appendChild( p_url );
 
         let blockquote = document.createElement("blockquote");
@@ -168,6 +174,8 @@ function show_link_lists ( current_page_url ) {
           let page_info_item = document.createElement("li");
           if (true !== item.found && "received" === item.origin){
             page_info_item.setAttribute("class", "not_found");
+          } else {
+            page_info_item.addEventListener("click", find_quote);
           }
 
           let page_info_blockquote = blockquote.cloneNode(true);
@@ -214,6 +222,32 @@ function show_list_placeholder (list_el) {
     li.appendChild( i );
     list_el.appendChild( li );
   }
+}
+
+function find_quote ( event ) {
+  const target = event.currentTarget;
+
+  let text = null;
+  let text_el = target.querySelector("blockquote");
+  if (text_el) {
+    text = text_el.textContent;
+  }
+
+  let note = null;
+  let note_el = target.querySelector("q");
+  if (note_el) {
+    note = note_el.textContent;
+  }
+
+  // NOTE: to send a message between the popup and content script,
+  //       we have to use chrome.tabs and include a tab id
+  chrome.tabs.sendMessage(active_tab.id, {
+    action: "show_quote",
+    details: {
+      text: text,
+      note: note
+    }
+  });
 }
 
 
