@@ -2,7 +2,7 @@
 
 Prototype Chrome extension to enable "deep link" sharing of a selection, with anyone else who has this extension.
 
-You can try this out from the [Nanotation extension on the Chrome web store](https://chrome.google.com/webstore/detail/nanotation/eofaggkpbjobpbeafahaflnjkmgjlipo).
+You can learn more at the [Fizz Studio Nanotation page](https://fizz.studio/nanotation/), or try it out from the [Nanotation extension on the Chrome web store](https://chrome.google.com/webstore/detail/nanotation/eofaggkpbjobpbeafahaflnjkmgjlipo).
 
 Provides a context menu item that lets you copy a link to a text selection. This link includes a custom query parameter (`text`) used by this extension. When that custom link is followed, the Nanotation extension decodes the `text` parameter and searches for that text; if it finds it, it highlights the selection text in the shared document and scrolls to the parent block element for the selection.
 
