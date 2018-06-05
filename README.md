@@ -1,3 +1,7 @@
+# UPDATE:
+Future development will be through [Fizz Studio](https://fizz.studio/nanotation/). All updates and issues will be maintained at the [Fizz Studio Nanotation repo](https://github.com/fizzstudio/nanotation).
+
+
 # Nanotation browser extension
 
 Prototype Chrome extension to enable "deep link" sharing of a selection, with anyone else who has this extension.
