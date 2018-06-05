@@ -43,4 +43,4 @@ For a real annotation extension, see [Hypothes.is](https://web.hypothes.is/). Th
 See also discussions on Twitter:
 - Request by [Scott Vinkle (@svinkle), 2017 Dec 22](https://twitter.com/svinkle/status/944249198274400256), with some discussion by standards folks.
 - Follow-up by me [Doug Schepers (@shepazu), 2017 Dec 22](https://twitter.com/shepazu/status/944344386040680448), with not much interest from others, but I wanted to learn how to make a Chrome extension anyway, and I really like annotations, so I threw this together in a couple days.
-- Announcement of Nanotation by me [Doug Schepers (@shepazu), 2017 Dec 28](https://twitter.com/shepazu/status/946469391545364485)
+- Announcement of Nanotation by [Doug Schepers (@shepazu), 2017 Dec 28](https://twitter.com/shepazu/status/946469391545364485)
