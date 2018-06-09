@@ -91,7 +91,7 @@ function show_selection( node ) {
   var mark_id = null;
   var found = false;
   var start_index = target_text.indexOf( search_str )
-  if (-1 != start_index) {
+  if (-1 !== start_index) {
     found = true;
 
     var node_el = node.parentElement;
