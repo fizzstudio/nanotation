@@ -104,14 +104,56 @@ function show_selection( node ) {
 
     mark_id = generate_unique_id("nanotation")
     var mark_el = document.createElement("mark");
+    mark_el.className = "nanotation-ref";
     mark_el.setAttribute("id", mark_id );
-    mark_el.setAttribute("data-nanotation", "selection");
-    mark_el.setAttribute("tabindex", "-1");
+
+    var details_el = document.createElement("details");
+    details_el.className = "nanotation-details";
+    details_el.open = true;
+
+    var summary_el = document.createElement("summary");
+    summary_el.className = "nanotation-indicator sr-only";
+    summary_el.setAttribute("aria-describedby", mark_id);
+    summary_el.textContent = "Has annotation";
+
+    var tooltip_el = document.createElement("div");
+    tooltip_el.className = "nanotation-tooltip";
+    var tooltip_content = document.createElement("div");
+    tooltip_content.className = "nanotation-tooltip-content";
 
     if (note_str) {
-      mark_el.setAttribute("title", note_str);
+      var tooltip_q = document.createElement('q');
+      tooltip_q.textContent = note_str;
+      tooltip_content.appendChild(tooltip_q);
     }
+
+    tooltip_el.appendChild(tooltip_content);
+    details_el.appendChild(summary_el);
+    details_el.appendChild(tooltip_el);
+
     range.surroundContents(mark_el);
+    mark_el.parentNode.insertBefore(details_el, mark_el.nextSibling);
+    tooltip_el.style.width = mark_el.offsetWidth + "px";
+
+    function addFocus() {
+      mark_el.classList.add("has-focus");
+    }
+
+    function removeFocus() {
+      mark_el.classList.remove("has-focus");
+    }
+
+    function toggleDetails() {
+      details_el.open = !details_el.open;
+    }
+
+    summary_el.addEventListener("focus", addFocus);
+    summary_el.addEventListener("blur", removeFocus);
+
+    details_el.addEventListener("open", addFocus);
+    details_el.addEventListener("close", removeFocus);
+
+    mark_el.addEventListener("click", toggleDetails);
 
     // set scroll position
     scroll_to_mark ( mark_id, 1000 );
