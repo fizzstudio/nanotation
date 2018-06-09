@@ -1,5 +1,7 @@
 const storage = chrome.storage.local;
 let active_tab = null;
+let search_input = null;
+let all_links = null;
 
 function get_current_tab_info (callback) {
   var query_info = {
@@ -44,36 +46,19 @@ document.addEventListener( "DOMContentLoaded", () => {
       const page_info_p = document.querySelector("#page_info > p");
       page_info_p.textContent = page_url;
     }
-    show_link_lists(page_url);
+    update_link_lists(page_url);
   });
 
-  const clear_all_button = document.querySelector("#clear_all_button");
-  clear_all_button.addEventListener("click", () => {
-    // save and restore prefs after clearing
-    storage.get("prefs", (result) => {
-      let store_links = true;
-      if (result.prefs) {
-        store_links = result.prefs.store_links;
-      }
-
-      let prefs = {
-        "store_links": store_links
-      };
-
-      storage.clear( () => {
-        set_prefs(prefs);
-        show_link_lists();
-      });
-    });
-  });
+  const delete_links_button = document.querySelector("#delete_links_button");
+  delete_links_button.addEventListener("click",  delete_all_links);
 
 
   const download_button = document.querySelector("#download_button");
   download_button.addEventListener("click", download_JSON);
 
-  const store_links_checkbox = document.querySelector("#store_links_checkbox");
   // check if the store_links pref has been set, and set checkbox to match
   // NOTE: links are saved by default
+  const store_links_checkbox = document.querySelector("#store_links_checkbox");
   let store_links = true;
   storage.get("prefs", (items) => {
     if (items.prefs) {
@@ -90,6 +75,7 @@ document.addEventListener( "DOMContentLoaded", () => {
     store_links_checkbox.checked = store_links;
   });
 
+
   store_links_checkbox.addEventListener("change", () => {
     let prefs = {
       "store_links": store_links_checkbox.checked
@@ -99,9 +85,15 @@ document.addEventListener( "DOMContentLoaded", () => {
       console.log("stored:", item);
     });
   });
+
+
+  // search
+  search_input = document.querySelector("input[id=search_input]");
+  search_input.addEventListener("search", search_links);
+
 });
 
-function show_link_lists ( current_page_url ) {
+function update_link_lists ( current_page_url ) {
   const sent_link_list = document.querySelector("#sent_link_list");
   const sent_count_el = document.querySelector("#sent_count");
   const received_link_list = document.querySelector("#received_link_list");
@@ -120,37 +112,69 @@ function show_link_lists ( current_page_url ) {
       if (("string" === typeof key) && ("prefs" !== key)) {
         let item = storage_array[key];
         let li = document.createElement("li");
+        li.classList.add("link_item");
+
 
         let details = document.createElement("details");
         details.setAttribute("open", "open");
         if (true !== item.found && "received" === item.origin){
-          details.setAttribute("class", "not_found");
+          details.classList.add("not_found");
         }
 
         let summary = document.createElement("summary");
         summary.textContent = item.title;
         details.appendChild( summary );
 
+        let item_controls = document.createElement("section");
+        item_controls.classList.add("item_controls");
+        details.appendChild( item_controls );
+
+        let link_button = document.createElement("button");
+        link_button.classList.add("link");
+        add_icon(link_button, "link", "open link in new tab");
+        let button_a = document.createElement("a");
+        button_a.setAttribute("href", item.link);
+        button_a.setAttribute("target", "_blank");
+        button_a.appendChild( link_button );
+        item_controls.appendChild( button_a );
+
+        let delete_button = document.createElement("button");
+        delete_button.classList.add("delete");
+        add_icon(delete_button, "delete", "delete item from link history");
+        delete_button.addEventListener("click", remove_item);
+        item_controls.appendChild( delete_button );
+
+
+        let item_content = document.createElement("section");
+        item_content.classList.add("item_content");
+        details.appendChild( item_content );
+
+        // add links to each item
+        let visit_message = (item.visits.length + 1) + " visits\nfirst visit: "
+                          + (new Date(item.visits[0].timestamp)).toDateString()
+
         let p_url = document.createElement("p");
-        p_url.setAttribute("class", "url");
+        p_url.classList.add("url");
         let a = document.createElement("a");
         a.setAttribute("href", item.link);
         a.setAttribute("target", "_blank");
+        a.setAttribute("title", visit_message);
         a.textContent = item.url;
         p_url.appendChild( a );
-        details.appendChild( p_url );
+        item_content.appendChild( p_url );
 
         let blockquote = document.createElement("blockquote");
         blockquote.textContent = item.text;
-        details.appendChild( blockquote );
+        item_content.appendChild( blockquote );
 
         let q_note = null;
         if (item.note) {
           q_note = document.createElement("q");
-          q_note.setAttribute("class", "note");
+          q_note.classList.add("note");
           q_note.textContent = item.note;
-          details.appendChild( q_note );
+          item_content.appendChild( q_note );
         }
+
 
         // let date = new Date(key);
         // let date_str = date.toLocaleDateString()
@@ -158,24 +182,27 @@ function show_link_lists ( current_page_url ) {
         li.appendChild( details );
 
         if ( "sent" === item.origin ){
+          li.id = "sent-" + key;
           sent_link_list.appendChild( li );
           ++sent_count;
         } else if ( "received" === item.origin ){
+          li.id = "received-" + key;
           received_link_list.appendChild( li );
           ++received_count;
         }
 
-        // TODO: add links to each item
-
-        // TODO: add items on current page to current page list
+        // add items on current page to current page list
         if (current_page_url === item.url){
           ++current_count;
 
           let page_info_item = document.createElement("li");
+          page_info_item.id = "current-" + key;
+          page_info_item.classList.add("link_item");
+
           if (true !== item.found && "received" === item.origin){
-            page_info_item.setAttribute("class", "not_found");
+            page_info_item.classList.add("not_found");
           } else {
-            page_info_item.addEventListener("click", find_quote);
+            page_info_item.addEventListener("click", find_quote_in_page);
           }
 
           let page_info_blockquote = blockquote.cloneNode(true);
@@ -204,9 +231,73 @@ function show_link_lists ( current_page_url ) {
     show_list_placeholder(sent_link_list);
     show_list_placeholder(received_link_list);
     show_list_placeholder(page_info_list);
+
+    all_links = document.querySelectorAll("li.link_item");
   });
 }
 
+function add_icon ( target_el, icon_name, icon_title ) {
+  const svgns = "http://www.w3.org/2000/svg";
+  const xlinkns = "http://www.w3.org/1999/xlink";
+
+  let icon_frame = document.createElementNS(svgns, "svg");
+  let icon = document.createElementNS(svgns, "use");
+  icon.setAttributeNS(xlinkns, "href", `#${icon_name}_icon`);
+  let icon_title_el = document.createElementNS(svgns, "title");
+  icon_title_el.textContent = icon_title || icon_name;
+  icon.appendChild( icon_title_el );
+  icon_frame.appendChild( icon );
+  target_el.appendChild( icon_frame );
+}
+
+function remove_item (event) {
+  const delete_button = event.currentTarget;
+  const item = delete_button.closest("li[id]");
+  const item_key = item.id.split("-")[1];
+  // console.info(delete_button, item, item.id)
+
+  // allow deleting individual links
+  storage.remove(item_key, () => {
+    item.remove()
+    console.log("removed", );
+  });
+}
+
+function delete_all_links (event) {
+  const confirm_delete_dialog = document.querySelector("#confirm_delete_dialog");
+  confirm_delete_dialog.showModal();
+
+
+  document.querySelector("#cancel_delete_button").addEventListener("click", function() {
+    console.log("cancel");
+    confirm_delete_dialog.close();
+  });
+
+  document.querySelector("#confirm_delete_button").addEventListener("click", function() {
+    console.log("delete");
+
+    // save and restore prefs after clearing
+    storage.get("prefs", (result) => {
+      let store_links = true;
+      if (result.prefs) {
+        store_links = result.prefs.store_links;
+      }
+
+      let prefs = {
+        "store_links": store_links
+      };
+
+      storage.clear( () => {
+        // restore prefs
+        set_prefs(prefs);
+        update_link_lists();
+      });
+    });
+
+    confirm_delete_dialog.close();
+  });
+
+}
 
 function clear_list (list_el) {
   while (list_el.firstChild) {
@@ -224,7 +315,24 @@ function show_list_placeholder (list_el) {
   }
 }
 
-function find_quote ( event ) {
+
+function search_links () {
+  let search_str = search_input.value.toLowerCase();
+  all_links.forEach(function(item, i) {
+    let list_text = item.textContent.toLowerCase().replace(/\s+/g, " ");
+    let search_index = list_text.indexOf(search_str);
+    if (-1 == search_index) {
+      item.classList.add("hide");
+    } else {
+      item.classList.remove("hide");
+    }
+
+    // TODO: highlight text matches
+  });
+}
+
+
+function find_quote_in_page ( event ) {
   const target = event.currentTarget;
 
   let text = null;
@@ -253,23 +361,34 @@ function find_quote ( event ) {
 
 function download_JSON () {
   storage.get(null, function (response) {
+    let seq_id = 0;
     let json_export = [];
     for (let key in response) {
       if (("string" === typeof key) && ("prefs" !== key)) {
         let item = response[key];
 
         let item_obj = {};
-        item_obj["title"] = item.title;
-        item_obj["url"] = item.url;
-        item_obj["link"] = item.link;
-        item_obj["text"] = item.text;
-        item_obj["note"] = item.note;
-        item_obj["timestamp"] = item.visits[0].timestamp;
+        item_obj["@context"] = "http://www.w3.org/ns/anno.jsonld";
+        item_obj["id"] = "http://fizz.studio/nanotation/"
+                          + Date.now() + "-"
+                          + seq_id++ + "-"
+                          + Math.floor(Math.random() * 10000);
+        item_obj["type"] = "Annotation";
+        item_obj["target"] = {};
+        item_obj["target"]["title"] = item.title;
+        item_obj["target"]["source"] = item.url;
+        item_obj["target"]["selector"] = {};
+        item_obj["target"]["selector"]["exact"] = item.text;
+        item_obj["target"]["selector"]["type"] = "TextQuoteSelector";
+        item_obj["bodyValue"] = item.note;
+        item_obj["created"] = (new Date(item.visits[0].timestamp)).toISOString();
         item_obj["visits"] = item.visits.length + 1;
+        item_obj["link"] = item.link;
 
         json_export.push(item_obj)
       }
     }
+
     const controls = document.querySelector("section#controls");
     let timestamp = new Date().getTime();
 

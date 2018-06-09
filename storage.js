@@ -4,7 +4,7 @@ function create_storage_item ( details ) {
   let item_data = details;
   item_data.visits = [];
   item_data.visits.push({
-    timestamp: new Date().getTime()
+    timestamp: Date.now()
   });
 
   let item = {

@@ -11,16 +11,29 @@ window.onload = () => {
   page_url = location.hostname + location.pathname;
   page_title = document.title;
 
+  let is_annotation = false;
   let query = location.search;
   if(query) {
     var url_params = new URLSearchParams(query);
-    search_str = url_params.get("text")
-    note_str = url_params.get("note")
+    search_str = url_params.get("text");
+    note_str = url_params.get("note");
 
-    search_str = trim_text(search_str);
-
-    find_text_nodes();
+    if (search_str) {
+      is_annotation = false;
+      search_str = trim_text(search_str);
+      find_text_nodes();
+    }
   }
+
+  if (!is_annotation) {
+    chrome.runtime.sendMessage(null, {
+      action: "update_badge",
+      details: {
+        count: 0
+      }
+    });
+  }
+
 }
 
 function find_text_nodes() {
@@ -100,18 +113,7 @@ function show_selection( node ) {
     range.surroundContents(mark_el);
 
     // set scroll position
-    scroll_to_mark ( mark_id );
-
-    // // set scroll position
-    // // NOTE: When hash is present, it scrolls the window again after this function, so need hack
-    // // node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-    // // TODO: find better solution than setTimeout hack for navigating to the right section
-    // //    after the hash link has been resolved, which seems to happen after "load" event.
-    // setTimeout(function(){
-    //   // let mark_el = document.querySelector("[data-nanotation=selection]");
-    //   let mark_el = document.querySelector(`#${mark_id}`)
-    //   mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-    // }, 1000);
+    scroll_to_mark ( mark_id, 1000 );
   }
   return {
     found: found,
@@ -135,24 +137,25 @@ function find_selection ( details ) {
   }
 
   if (selection_mark ) {
-    scroll_to_mark( selection_mark.id );
+    scroll_to_mark( selection_mark.id, 300 );
   } else {
     find_text_nodes();
   }
 }
 
 
-function scroll_to_mark ( mark_id ) {
+function scroll_to_mark ( mark_id, timeout ) {
   // set scroll position
   // NOTE: When hash is present, it scrolls the window again after this function, so need hack
   // node_el.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-  // TODO: find better solution than setTimeout hack for navigating to the right section
-  //    after the hash link has been resolved, which seems to happen after "load" event.
+  // TODO: find better solution than setTimeout hack for navigating
+  //       to the right section after the hash link has been resolved,
+  //       which seems to happen after "load" event.s
   setTimeout(function(){
     // let mark_el = document.querySelector("[data-nanotation=selection]");
     let mark_el = document.querySelector(`#${mark_id}`)
     mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-  }, 500);
+  }, timeout);
 }
 
 function trim_text( text_str ) {
@@ -229,6 +232,7 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
     }
 
     if ( "copy_link" === request.action ) {
+      // TODO: wipe previous note if one exists in the params
       url.search = url_params.toString();
       details.link = url.toString();
       save_link( details );

@@ -6,7 +6,7 @@ Future development will be through [Fizz Studio](https://fizz.studio/nanotation/
 
 Prototype Chrome extension to enable "deep link" sharing of a selection, with anyone else who has this extension.
 
-You can try this out from the [Nanotation extension on the Chrome web store](https://chrome.google.com/webstore/detail/nanotation/eofaggkpbjobpbeafahaflnjkmgjlipo).
+You can learn more at the [Fizz Studio Nanotation page](https://fizz.studio/nanotation/), or try it out from the [Nanotation extension on the Chrome web store](https://chrome.google.com/webstore/detail/nanotation/eofaggkpbjobpbeafahaflnjkmgjlipo).
 
 Provides a context menu item that lets you copy a link to a text selection. This link includes a custom query parameter (`text`) used by this extension. When that custom link is followed, the Nanotation extension decodes the `text` parameter and searches for that text; if it finds it, it highlights the selection text in the shared document and scrolls to the parent block element for the selection.
 
@@ -47,4 +47,4 @@ For a real annotation extension, see [Hypothes.is](https://web.hypothes.is/). Th
 See also discussions on Twitter:
 - Request by [Scott Vinkle (@svinkle), 2017 Dec 22](https://twitter.com/svinkle/status/944249198274400256), with some discussion by standards folks.
 - Follow-up by me [Doug Schepers (@shepazu), 2017 Dec 22](https://twitter.com/shepazu/status/944344386040680448), with not much interest from others, but I wanted to learn how to make a Chrome extension anyway, and I really like annotations, so I threw this together in a couple days.
-- Announcement of Nanotation by me [Doug Schepers (@shepazu), 2017 Dec 28](https://twitter.com/shepazu/status/946469391545364485)
+- Announcement of Nanotation by [Doug Schepers (@shepazu), 2017 Dec 28](https://twitter.com/shepazu/status/946469391545364485)
