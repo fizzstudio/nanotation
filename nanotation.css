@@ -88,10 +88,51 @@
     cursor: pointer;
   }
 
-mark[title] {
-  font-weight: bold;
+.nanotation-ref {
+  cursor: pointer;
 }
 
-mark:focus {
-  outline: 1px green solid;
+.nanotation-ref.has-focus {
+  box-shadow: 0 0 1px 3px rgba(59, 153, 252, 0.65);
+}
+
+.nanotation-details {
+  position: relative;
+  display: inline;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.nanotation-indicator::-webkit-details-marker {
+  display: none;
+}
+
+.nanotation-indicator::-moz-details-marker,
+.nanotation-indicator::-ms-details-marker,
+.nanotation-indicator::-o-details-marker,
+.nanotation-indicator::details-marker {
+  display: none;
+}
+
+.nanotation-tooltip {
+  position: absolute;
+  top: -3.25em;
+  right: 0;
+}
+
+.nanotation-tooltip-content {
+  background-color: #fff;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  padding: 0.5rem;
+  margin: 0 auto;
+  display: table;
 }
