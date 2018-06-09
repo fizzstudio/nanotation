@@ -106,6 +106,7 @@ function show_selection( node ) {
     var mark_el = document.createElement("mark");
     mark_el.setAttribute("id", mark_id );
     mark_el.setAttribute("data-nanotation", "selection");
+    mark_el.setAttribute("tabindex", "-1");
 
     if (note_str) {
       mark_el.setAttribute("title", note_str);
@@ -153,8 +154,9 @@ function scroll_to_mark ( mark_id, timeout ) {
   //       which seems to happen after "load" event.s
   setTimeout(function(){
     // let mark_el = document.querySelector("[data-nanotation=selection]");
-    let mark_el = document.querySelector(`#${mark_id}`)
+    let mark_el = document.querySelector(`#${mark_id}`);
     mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+    mark_el.focus();
   }, timeout);
 }
 

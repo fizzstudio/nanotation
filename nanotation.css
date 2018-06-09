@@ -91,3 +91,7 @@
 mark[title] {
   font-weight: bold;
 }
+
+mark:focus {
+  outline: 1px green solid;
+}
