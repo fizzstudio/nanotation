@@ -26,67 +26,67 @@
   font-family: Georgia, serif;
 }
 
-  #nanotation_lightbox blockquote{
-    display: block;
-    background-color: #fff;
-    padding: 15px 20px 15px 45px;
-    margin: 0 0 20px;
-    position: relative;
+#nanotation_lightbox blockquote{
+  display: block;
+  background-color: #fff;
+  padding: 15px 20px 15px 45px;
+  margin: 0 0 20px;
+  position: relative;
 
-    /*Font*/
-    font-family: Georgia, serif;
-    font-size: 16px;
-    line-height: 1.2;
-    color: #666;
-    text-align: justify;
+  /*Font*/
+  font-family: Georgia, serif;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #666;
+  text-align: justify;
 
-    /*Borders */
-    border-left: 15px solid #c76c0c;
-    border-right: 2px solid #c76c0c;
+  /*Borders */
+  border-left: 15px solid #c76c0c;
+  border-right: 2px solid #c76c0c;
 
-    /*Box Shadow */
-    box-shadow: 2px 2px 15px #ccc;
-  }
+  /*Box Shadow */
+  box-shadow: 2px 2px 15px #ccc;
+}
 
-  #nanotation_lightbox blockquote::before{
-    content: "\201C"; /*Unicode for Left Double Quote*/
+#nanotation_lightbox blockquote::before{
+  content: "\201C"; /*Unicode for Left Double Quote*/
 
-    /*Font*/
-    font-family: Georgia, serif;
-    font-size: 60px;
-    font-weight: bold;
-    color: #999;
+  /*Font*/
+  font-family: Georgia, serif;
+  font-size: 60px;
+  font-weight: bold;
+  color: #999;
 
-    /*Positioning*/
-    position: absolute;
-    left: 10px;
-    top:5px;
-  }
+  /*Positioning*/
+  position: absolute;
+  left: 10px;
+  top:5px;
+}
 
-  #nanotation_lightbox blockquote::after{
-    /*Reset to make sure*/
-    content: "";
-  }
+#nanotation_lightbox blockquote::after{
+  /*Reset to make sure*/
+  content: "";
+}
 
-  #nanotation_lightbox input, #nanotation_lightbox button {
-    font-size: 20pt;
-    display: block;
-    margin: 1em auto;
-  }
+#nanotation_lightbox input, #nanotation_lightbox button {
+  font-size: 20pt;
+  display: block;
+  margin: 1em auto;
+}
 
-  #nanotation_lightbox input  {
-    width: 95%;
-    border: 1px solid #c76c0c;
-  }
+#nanotation_lightbox input  {
+  width: 95%;
+  border: 1px solid #c76c0c;
+}
 
-  #nanotation_lightbox button {
-    background-color: #c76c0c;
-    color: white;
-    box-shadow: 2px 2px 15px #ccc;
-    border-radius: 5px;
-    padding: 0.2em 0.6em;
-    cursor: pointer;
-  }
+#nanotation_lightbox button {
+  background-color: #c76c0c;
+  color: white;
+  box-shadow: 2px 2px 15px #ccc;
+  border-radius: 5px;
+  padding: 0.2em 0.6em;
+  cursor: pointer;
+}
 
 .nanotation-ref {
   cursor: pointer;
@@ -124,15 +124,52 @@
 }
 
 .nanotation-tooltip {
+  box-sizing: border-box;
   position: absolute;
-  top: -3.25em;
   right: 0;
+  line-height: 1;
 }
 
 .nanotation-tooltip-content {
-  background-color: #fff;
+  background-color: rgb(192, 86, 48);
+  border-radius: 0.25rem;
+  color: #fff;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   padding: 0.5rem;
   margin: 0 auto;
   display: table;
+}
+
+.nanotation-tooltip-arrow {
+  border-color: rgb(192, 86, 48);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 0 7px;
+  left: calc(50% - 7px);
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.nanotation-tooltip[data-placement^="top"] {
+  bottom: 0;
+  transform: translateY(calc(-50% - 7px));
+}
+
+.nanotation-tooltip[data-placement^="top"] .nanotation-tooltip-arrow {
+  border-width: 7px 7px 0 7px;
+  border-bottom-color: transparent;
+  bottom: -7px;
+}
+
+.nanotation-tooltip[data-placement^="bottom"] {
+  top: 0;
+  transform: translateY(calc(50% - 3.5px));
+}
+
+.nanotation-tooltip[data-placement^="bottom"] .nanotation-tooltip-arrow {
+  border-width: 0 7px 7px 7px;
+  border-top-color: transparent;
+  top: -7px;
 }

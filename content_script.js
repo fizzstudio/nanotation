@@ -116,18 +116,8 @@ function show_selection( node ) {
     summary_el.setAttribute("aria-describedby", mark_id);
     summary_el.textContent = "Has annotation";
 
-    var tooltip_el = document.createElement("div");
-    tooltip_el.className = "nanotation-tooltip";
-    var tooltip_content = document.createElement("div");
-    tooltip_content.className = "nanotation-tooltip-content";
+    var tooltip_el = make_tooltip(note_str);
 
-    if (note_str) {
-      var tooltip_q = document.createElement('q');
-      tooltip_q.textContent = note_str;
-      tooltip_content.appendChild(tooltip_q);
-    }
-
-    tooltip_el.appendChild(tooltip_content);
     details_el.appendChild(summary_el);
     details_el.appendChild(tooltip_el);
 
@@ -150,10 +140,10 @@ function show_selection( node ) {
     summary_el.addEventListener("focus", addFocus);
     summary_el.addEventListener("blur", removeFocus);
 
-    details_el.addEventListener("open", addFocus);
-    details_el.addEventListener("close", removeFocus);
-
     mark_el.addEventListener("click", toggleDetails);
+    position_tooltip(mark_el, tooltip_el);
+
+    window.addEventListener('scroll', position_tooltip.bind(null, mark_el, tooltip_el));
 
     // set scroll position
     scroll_to_mark ( mark_id, 1000 );
@@ -162,6 +152,31 @@ function show_selection( node ) {
     found: found,
     mark_id: mark_id
   };
+}
+
+function position_tooltip(ref, tooltip) {
+  var offsetTop = ref.getBoundingClientRect().top;
+  var placement = (offsetTop < tooltip.offsetHeight) ? "bottom" : "top";
+  tooltip.setAttribute("data-placement", placement);
+}
+
+function make_tooltip( content ) {
+  var tooltip_el = document.createElement("div");
+  var tooltip_content = document.createElement("div");
+  var tooltip_quote = document.createElement('q');
+  var tooltip_arrow = document.createElement("div");
+
+  tooltip_el.className = "nanotation-tooltip";
+  tooltip_content.className = "nanotation-tooltip-content";
+  tooltip_arrow.className = "nanotation-tooltip-arrow";
+
+  tooltip_quote.textContent = content;
+
+  tooltip_content.appendChild(tooltip_quote);
+  tooltip_el.appendChild(tooltip_arrow);
+  tooltip_el.appendChild(tooltip_content);
+
+  return tooltip_el;
 }
 
 
@@ -194,11 +209,11 @@ function scroll_to_mark ( mark_id, timeout ) {
   // TODO: find better solution than setTimeout hack for navigating
   //       to the right section after the hash link has been resolved,
   //       which seems to happen after "load" event.s
+  document.querySelector(`[aria-describedby=${mark_id}]`).focus();
   setTimeout(function(){
     // let mark_el = document.querySelector("[data-nanotation=selection]");
     let mark_el = document.querySelector(`#${mark_id}`);
     mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-    mark_el.focus();
   }, timeout);
 }
 
