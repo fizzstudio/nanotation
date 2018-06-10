@@ -93,7 +93,7 @@
 }
 
 .nanotation-ref.has-focus {
-  box-shadow: 0 0 1px 3px rgba(59, 153, 252, 0.65);
+  outline: 5px auto rgb(59, 153, 252);
 }
 
 .nanotation-details {
