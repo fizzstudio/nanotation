@@ -140,9 +140,6 @@ function show_selection( node ) {
     summary_el.addEventListener("focus", addFocus);
     summary_el.addEventListener("blur", removeFocus);
 
-    details_el.addEventListener("open", addFocus);
-    details_el.addEventListener("close", removeFocus);
-
     mark_el.addEventListener("click", toggleDetails);
 
     // set scroll position
