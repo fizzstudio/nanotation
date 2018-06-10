@@ -209,11 +209,11 @@ function scroll_to_mark ( mark_id, timeout ) {
   // TODO: find better solution than setTimeout hack for navigating
   //       to the right section after the hash link has been resolved,
   //       which seems to happen after "load" event.s
+  document.querySelector(`[aria-describedby=${mark_id}]`).focus();
   setTimeout(function(){
     // let mark_el = document.querySelector("[data-nanotation=selection]");
     let mark_el = document.querySelector(`#${mark_id}`);
     mark_el.parentNode.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-    mark_el.focus();
   }, timeout);
 }
 
