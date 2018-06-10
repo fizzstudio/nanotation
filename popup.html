@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 
 <head>
@@ -283,6 +283,15 @@
       display: none;
     }
 
+.sr-only {
+position:absolute;
+ left:-10000px;
+ top:auto;
+ width:1px;
+ height:1px;
+ overflow:hidden;
+}
+
   </style>
   <script src="popup.js"></script>
 </head>
@@ -295,16 +304,18 @@
 
   <main>
     <section id="search">
-      <input id="search_input" type="search" incremental placeholder="🔍" aria-label="search input">
-      <!-- <button id="search_button" title="search"><span>search</span></button> -->
+      <label for="search_input" class="sr-only"><h2>Search within annotations</h2></label>
+      <input id="search_input" type="search" incremental placeholder="\u55357">
+      <!-- <button id="search_button"><span>search</span></button> -->
     </section>
 
     <section id="controls">
-      <label id="store_links_label" title="store links on local machine">
+      <h2>Storage and Link Controls</h2>
+      <label id="store_links_label">
         <input id="store_links_checkbox" type="checkbox"/> store links
       </label>
-      <button id="delete_links_button" title="delete link history">delete links</button>
-      <button id="download_button" title="download links as JSON">download links</button>
+      <button id="delete_links_button">delete links</button>
+      <button id="download_button">download links</button>
     </section>
 
     <section id="link_display">
@@ -335,8 +346,8 @@
       <p>You are about to permanently delete all your saved links. This action is irreversible. Are you sure you want to continue?</p>
 
       <section id="dialog_notes">
-        <p><b>Note:</b></p>
-        <ul>
+        <h2 id="note">Note:<h2>
+        <ul aria-labeledby="note">
           <li>You can delete an individual link by clicking on its delete icon</li>
           <li>You may wish to first download your links with the <i>download links</i> button</li>
           <li>Future links will still be saved, unless you turn this option off with the <i>save links</i> checkbox</li>
@@ -346,7 +357,6 @@
         <button id="cancel_delete_button">Cancel</button>
         <button id="confirm_delete_button">Delete</button>
       </section>
-    </main>
   </dialog>
 
 
@@ -363,6 +373,6 @@
       </svg>
     </defs>
   </svg>
-</body>
 
+</body>
 </html>
