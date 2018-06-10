@@ -116,18 +116,8 @@ function show_selection( node ) {
     summary_el.setAttribute("aria-describedby", mark_id);
     summary_el.textContent = "Has annotation";
 
-    var tooltip_el = document.createElement("div");
-    tooltip_el.className = "nanotation-tooltip";
-    var tooltip_content = document.createElement("div");
-    tooltip_content.className = "nanotation-tooltip-content";
+    var tooltip_el = make_tooltip(note_str);
 
-    if (note_str) {
-      var tooltip_q = document.createElement('q');
-      tooltip_q.textContent = note_str;
-      tooltip_content.appendChild(tooltip_q);
-    }
-
-    tooltip_el.appendChild(tooltip_content);
     details_el.appendChild(summary_el);
     details_el.appendChild(tooltip_el);
 
@@ -164,6 +154,25 @@ function show_selection( node ) {
   };
 }
 
+
+function make_tooltip( content ) {
+  var tooltip_el = document.createElement("div");
+  var tooltip_content = document.createElement("div");
+  var tooltip_quote = document.createElement('q');
+  var tooltip_arrow = document.createElement("div");
+
+  tooltip_el.className = "nanotation-tooltip";
+  tooltip_content.className = "nanotation-tooltip-content";
+  tooltip_arrow.className = "nanotation-tooltip-arrow";
+
+  tooltip_quote.textContent = content;
+
+  tooltip_content.appendChild(tooltip_quote);
+  tooltip_el.appendChild(tooltip_arrow);
+  tooltip_el.appendChild(tooltip_content);
+
+  return tooltip_el;
+}
 
 function find_selection ( details ) {
   search_str = details.text;
