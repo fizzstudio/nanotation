@@ -295,11 +295,13 @@
 
   <main>
     <section id="search">
-      <input id="search_input" type="search" incremental placeholder="🔍" aria-label="search input">
+      <h2 class="sr-only">Search</h2>
+      <input id="search_input" type="search" incremental placeholder="🔍" aria-label="search input" aria-placeholder="search within annotations">
       <!-- <button id="search_button" title="search"><span>search</span></button> -->
     </section>
 
     <section id="controls">
+      <h2 class="sr-only">Link storage preferences</h2>
       <label id="store_links_label" title="store links on local machine">
         <input id="store_links_checkbox" type="checkbox"/> store links
       </label>
