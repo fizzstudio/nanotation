@@ -26,67 +26,67 @@
   font-family: Georgia, serif;
 }
 
-  #nanotation_lightbox blockquote{
-    display: block;
-    background-color: #fff;
-    padding: 15px 20px 15px 45px;
-    margin: 0 0 20px;
-    position: relative;
+#nanotation_lightbox blockquote{
+  display: block;
+  background-color: #fff;
+  padding: 15px 20px 15px 45px;
+  margin: 0 0 20px;
+  position: relative;
 
-    /*Font*/
-    font-family: Georgia, serif;
-    font-size: 16px;
-    line-height: 1.2;
-    color: #666;
-    text-align: justify;
+  /*Font*/
+  font-family: Georgia, serif;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #666;
+  text-align: justify;
 
-    /*Borders */
-    border-left: 15px solid #c76c0c;
-    border-right: 2px solid #c76c0c;
+  /*Borders */
+  border-left: 15px solid #c76c0c;
+  border-right: 2px solid #c76c0c;
 
-    /*Box Shadow */
-    box-shadow: 2px 2px 15px #ccc;
-  }
+  /*Box Shadow */
+  box-shadow: 2px 2px 15px #ccc;
+}
 
-  #nanotation_lightbox blockquote::before{
-    content: "\201C"; /*Unicode for Left Double Quote*/
+#nanotation_lightbox blockquote::before{
+  content: "\201C"; /*Unicode for Left Double Quote*/
 
-    /*Font*/
-    font-family: Georgia, serif;
-    font-size: 60px;
-    font-weight: bold;
-    color: #999;
+  /*Font*/
+  font-family: Georgia, serif;
+  font-size: 60px;
+  font-weight: bold;
+  color: #999;
 
-    /*Positioning*/
-    position: absolute;
-    left: 10px;
-    top:5px;
-  }
+  /*Positioning*/
+  position: absolute;
+  left: 10px;
+  top:5px;
+}
 
-  #nanotation_lightbox blockquote::after{
-    /*Reset to make sure*/
-    content: "";
-  }
+#nanotation_lightbox blockquote::after{
+  /*Reset to make sure*/
+  content: "";
+}
 
-  #nanotation_lightbox input, #nanotation_lightbox button {
-    font-size: 20pt;
-    display: block;
-    margin: 1em auto;
-  }
+#nanotation_lightbox input, #nanotation_lightbox button {
+  font-size: 20pt;
+  display: block;
+  margin: 1em auto;
+}
 
-  #nanotation_lightbox input  {
-    width: 95%;
-    border: 1px solid #c76c0c;
-  }
+#nanotation_lightbox input  {
+  width: 95%;
+  border: 1px solid #c76c0c;
+}
 
-  #nanotation_lightbox button {
-    background-color: #c76c0c;
-    color: white;
-    box-shadow: 2px 2px 15px #ccc;
-    border-radius: 5px;
-    padding: 0.2em 0.6em;
-    cursor: pointer;
-  }
+#nanotation_lightbox button {
+  background-color: #c76c0c;
+  color: white;
+  box-shadow: 2px 2px 15px #ccc;
+  border-radius: 5px;
+  padding: 0.2em 0.6em;
+  cursor: pointer;
+}
 
 .nanotation-ref {
   cursor: pointer;
