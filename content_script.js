@@ -141,6 +141,9 @@ function show_selection( node ) {
     summary_el.addEventListener("blur", removeFocus);
 
     mark_el.addEventListener("click", toggleDetails);
+    position_tooltip(mark_el, tooltip_el);
+
+    window.addEventListener('scroll', position_tooltip.bind(null, mark_el, tooltip_el));
 
     // set scroll position
     scroll_to_mark ( mark_id, 1000 );
@@ -151,6 +154,11 @@ function show_selection( node ) {
   };
 }
 
+function position_tooltip(ref, tooltip) {
+  var offsetTop = ref.getBoundingClientRect().top;
+  var placement = (offsetTop < tooltip.offsetHeight) ? "bottom" : "top";
+  tooltip.setAttribute("data-placement", placement);
+}
 
 function make_tooltip( content ) {
   var tooltip_el = document.createElement("div");
@@ -170,6 +178,7 @@ function make_tooltip( content ) {
 
   return tooltip_el;
 }
+
 
 function find_selection ( details ) {
   search_str = details.text;
