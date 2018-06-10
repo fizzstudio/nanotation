@@ -124,15 +124,51 @@
 }
 
 .nanotation-tooltip {
+  box-sizing: border-box;
   position: absolute;
-  top: -3.25em;
   right: 0;
+  line-height: 1;
 }
 
 .nanotation-tooltip-content {
   background-color: #fff;
+  border-radius: 0.25rem;
+  color: #fff;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   padding: 0.5rem;
   margin: 0 auto;
   display: table;
+}
+
+.nanotation-tooltip-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 0 7px;
+  left: calc(50% - 7px);
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.nanotation-tooltip[data-placement^="top"] {
+  bottom: 0;
+  transform: translateY(calc(-50% - 7px));
+}
+
+.nanotation-tooltip[data-placement^="top"] .nanotation-tooltip-arrow {
+  border-width: 7px 7px 0 7px;
+  border-bottom-color: transparent;
+  bottom: -7px;
+}
+
+.nanotation-tooltip[data-placement^="bottom"] {
+  top: 0;
+  transform: translateY(calc(50% - 3.5px));
+}
+
+.nanotation-tooltip[data-placement^="bottom"] .nanotation-tooltip-arrow {
+  border-width: 0 7px 7px 7px;
+  border-top-color: transparent;
+  top: -7px;
 }
