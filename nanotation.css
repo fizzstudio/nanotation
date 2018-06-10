@@ -127,8 +127,7 @@
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   position: absolute;
-  right: 0;
-  line-height: 1;
+  transform: translate(calc(-0.25rem - 7px), calc(7px + 2px));
 }
 
 .nanotation-tooltip-content {
@@ -137,8 +136,9 @@
   color: #fff;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   padding: 0.5rem;
-  margin: 0 auto;
+  left: 0;
   display: table;
+  transform: translateX(-0.25rem);
 }
 
 .nanotation-tooltip-arrow {
@@ -148,12 +148,15 @@
   border-style: solid;
   position: absolute;
   margin: 0 7px;
-  left: calc(50% - 7px);
+  top: -7px;
+  left: 0;
+  border-width: 0 7px 7px 7px;
   border-left-color: transparent;
   border-right-color: transparent;
+  border-top-color: transparent;
 }
 
-.nanotation-tooltip[data-placement^="top"] {
+/* .nanotation-tooltip[data-placement^="top"] {
   bottom: 0;
   transform: translateY(calc(-50% - 7px));
 }
@@ -167,10 +170,7 @@
 .nanotation-tooltip[data-placement^="bottom"] {
   top: 0;
   transform: translateY(calc(50% - 3.5px));
-}
+} */
 
-.nanotation-tooltip[data-placement^="bottom"] .nanotation-tooltip-arrow {
-  border-width: 0 7px 7px 7px;
-  border-top-color: transparent;
-  top: -7px;
+.nanotation-tooltip-arrow {
 }
